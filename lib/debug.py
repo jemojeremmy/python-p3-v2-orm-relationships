@@ -1,27 +1,22 @@
-#!/usr/bin/env python3
+# lib/debug.py
 
-from __init__ import CONN, CURSOR
-from department import Department
 from employee import Employee
-import ipdb
+from department import Department
 
+# Drop tables if they exist
+Employee.drop_table()
+Department.drop_table()
 
-def reset_database():
-    Employee.drop_table()
-    Department.drop_table()
-    Department.create_table()
-    Employee.create_table()
+# Create tables
+Employee.create_table()
+Department.create_table()
 
-    # Create seed data
-    payroll = Department.create("Payroll", "Building A, 5th Floor")
-    human_resources = Department.create(
-        "Human Resources", "Building C, East Wing")
-    Employee.create("Amir", "Accountant", payroll.id)
-    Employee.create("Bola", "Manager", payroll.id)
-    Employee.create("Charlie", "Manager", human_resources.id)
-    Employee.create("Dani", "Benefits Coordinator", human_resources.id)
-    Employee.create("Hao", "New Hires Coordinator", human_resources.id)
+# Create a department and save it to the database
+hr = Department.create("HR", "New York")
 
+# Create an employee and save it to the database
+john = Employee.create("John Doe", "Manager", hr.id)
 
-reset_database()
-ipdb.set_trace()
+# Fetch the department and print its employees
+fetched_hr = Department.find_by_id(hr.id)
+print(fetched_hr.employees())
